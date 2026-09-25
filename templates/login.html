@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Log In · DRERS{% endblock %}
+
+{% block content %}
+<div class="auth-wrap">
+  <div class="auth-panel">
+    {% include "_auth_left.html" %}
+
+    <div class="auth-right">
+      <div class="tabs">
+        <a class="tab active" href="{% url 'login' %}">Log In</a>
+        <a class="tab" href="{% url 'register' %}">Register</a>
+      </div>
+
+      {% if form.errors %}
+        <div class="form-error">Please enter both your username and password.</div>
+      {% endif %}
+
+      <form method="post" action="{% url 'login' %}" novalidate>
+        {% csrf_token %}
+        <div class="field">
+          <label for="id_username">Username</label>
+          <input id="id_username" name="username" autocomplete="username"
+                 value="{{ form.username.value|default_if_none:'' }}">
+        </div>
+        <div class="field">
+          <label for="id_password">Password</label>
+          <input id="id_password" name="password" type="password" autocomplete="current-password">
+        </div>
+        <input type="hidden" name="next" value="{{ request.GET.next|default_if_none:'' }}">
+        <button class="btn-red" type="submit">Log In</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Public Disaster Alerts · DRERS{% endblock %}
+
+{% block content %}
+<div class="alerts-wrap">
+  <div class="alerts-head">
+    <div>
+      <h2 class="alerts-title">Public Disaster Alerts</h2>
+      <p class="alerts-sub">Verified incidents currently known to the situation room. Personal reporter details are kept private.</p>
+    </div>
+    {% if user.is_authenticated %}
+      <a class="btn-ghost btn-lg" href="{% url 'dashboard' %}">Go to Dashboard →</a>
+    {% else %}
+      <a class="btn-ghost btn-lg" href="{% url 'login' %}">Citizen / Staff Log In →</a>
+    {% endif %}
+  </div>
+
+  <div class="alert-grid">
+    {% for a in alerts %}
+      <article class="alert-card">
+        <div class="badges">
+          <span class="badge {{ a.severity_class }}">{{ a.get_severity_display }}</span>
+          <span class="badge {{ a.status_class }}">{{ a.get_status_display }}</span>
+        </div>
+        <h3 class="alert-title">{{ a.emoji }} {{ a.get_disaster_type_display }} — {{ a.title }}</h3>
+        <p class="alert-desc">{{ a.description }}</p>
+        <div class="alert-meta">{{ a.location }} · Updated {{ a.updated_at|date:"M d" }} · {{ a.updated_at|date:"h:i A" }}</div>
+      </article>
+    {% empty %}
+      <p class="alerts-sub">No public alerts at this time.</p>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

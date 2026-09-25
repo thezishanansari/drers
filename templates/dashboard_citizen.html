@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}My Dashboard · DRERS{% endblock %}
+
+{% block content %}
+<div class="alerts-wrap">
+  <div class="alerts-head">
+    <div>
+      <p class="kicker">SITUATION ROOM · CITIZEN</p>
+      <h2 class="alerts-title">Welcome, {{ user.get_full_name|default:user.username }}</h2>
+      <p class="alerts-sub">Signed in as <span class="mono">{{ user.username }}</span> · Role: {{ role_name }}</p>
+    </div>
+    <div class="header-actions">
+      <a class="btn-red btn-inline" href="{% url 'report_create' %}">+ Report an Incident</a>
+      <a class="btn-ghost btn-lg" href="{% url 'public_alerts' %}">Public Alerts</a>
+    </div>
+  </div>
+
+  {% include "_stats.html" %}
+
+  <h3 class="section-title">My Reports</h3>
+  {% include "_report_table.html" with rows=reports %}
+</div>
+{% endblock %}

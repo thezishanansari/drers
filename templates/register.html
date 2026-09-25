@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Register · DRERS{% endblock %}
+
+{% block content %}
+<div class="auth-wrap">
+  <div class="auth-panel">
+    {% include "_auth_left.html" %}
+
+    <div class="auth-right">
+      <div class="tabs">
+        <a class="tab" href="{% url 'login' %}">Log In</a>
+        <a class="tab active" href="{% url 'register' %}">Register</a>
+      </div>
+
+      {% if form.errors %}
+        <div class="form-error">
+          {% for field, errs in form.errors.items %}
+            {% for e in errs %}{{ e }}<br>{% endfor %}
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <form method="post" action="{% url 'register' %}" novalidate>
+        {% csrf_token %}
+        <div class="field">
+          <label for="id_full_name">Full Name</label>
+          <input id="id_full_name" name="full_name" value="{{ form.full_name.value|default_if_none:'' }}">
+        </div>
+        <div class="field">
+          <label for="id_username">Username</label>
+          <input id="id_username" name="username" value="{{ form.username.value|default_if_none:'' }}">
+        </div>
+        <div class="field">
+          <label for="id_phone">Phone Number</label>
+          <input id="id_phone" name="phone" placeholder="98xxxxxxxx" value="{{ form.phone.value|default_if_none:'' }}">
+        </div>
+        <div class="field">
+          <label for="id_password">Password</label>
+          <input id="id_password" name="password" type="password" autocomplete="new-password">
+        </div>
+        {# Role is set server-side to Citizen. It is deliberately NOT a form input. #}
+        <button class="btn-red" type="submit">Create Citizen Account</button>
+      </form>
+
+      <p class="note">
+        New accounts are always registered with the Citizen role. Responder and Administrator
+        access is issued by the system administrator.
+      </p>
+    </div>
+  </div>
+</div>
+{% endblock %}

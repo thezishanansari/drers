@@ -1,0 +1,25 @@
+<div class="table-wrap">
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Code</th><th>Incident</th><th>Location</th>
+        <th>Severity</th><th>Status</th><th>Updated</th><th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for r in rows %}
+        <tr>
+          <td class="mono">{{ r.code }}</td>
+          <td>{{ r.emoji }} {{ r.title }}</td>
+          <td>{{ r.location }}</td>
+          <td><span class="badge {{ r.severity_class }}">{{ r.get_severity_display }}</span></td>
+          <td><span class="badge {{ r.status_class }}">{{ r.get_status_display }}</span></td>
+          <td class="mono">{{ r.updated_at|date:"M d · h:i A" }}</td>
+          <td><a class="row-link" href="{% url 'report_detail' r.code %}">Open →</a></td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="7" class="empty">No reports yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>

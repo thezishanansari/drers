@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Responder Dashboard · DRERS{% endblock %}
+
+{% block content %}
+<div class="alerts-wrap">
+  <div class="alerts-head">
+    <div>
+      <p class="kicker">SITUATION ROOM · RESPONDER</p>
+      <h2 class="alerts-title">Welcome, {{ user.get_full_name|default:user.username }}</h2>
+      <p class="alerts-sub">Signed in as <span class="mono">{{ user.username }}</span> · Role: {{ role_name }}</p>
+    </div>
+    <div class="header-actions">
+      <a class="btn-ghost btn-lg" href="{% url 'public_alerts' %}">Public Alerts</a>
+    </div>
+  </div>
+
+  {% include "_stats.html" %}
+
+  <h3 class="section-title">Assigned To Me</h3>
+  {% include "_report_table.html" with rows=reports %}
+
+  <h3 class="section-title">Unassigned / Pending</h3>
+  {% include "_report_table.html" with rows=unassigned %}
+</div>
+{% endblock %}

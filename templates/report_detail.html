@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block title %}{{ report.code }} · DRERS{% endblock %}
+
+{% block content %}
+<div class="narrow-wrap wide">
+  <div class="panel">
+    <div class="badges">
+      <span class="badge {{ report.severity_class }}">{{ report.get_severity_display }}</span>
+      <span class="badge {{ report.status_class }}">{{ report.get_status_display }}</span>
+      <span class="badge b-pending">{{ report.code }}</span>
+    </div>
+
+    <h2 class="alerts-title">{{ report.emoji }} {{ report.get_disaster_type_display }} — {{ report.title }}</h2>
+    <p class="alert-desc">{{ report.description }}</p>
+    <div class="alert-meta">
+      {{ report.location }} · Reported {{ report.created_at|date:"M d, Y · h:i A" }}
+      · Updated {{ report.updated_at|date:"M d · h:i A" }}
+    </div>
+
+    {% if report.photo %}
+      <img class="report-photo" src="{{ report.photo.url }}" alt="Incident photo">
+    {% endif %}
+
+    {% if report.assigned_to %}
+      <p class="note">Assigned responder: <strong>{{ report.assigned_to.get_full_name|default:report.assigned_to.username }}</strong></p>
+    {% endif %}
+  </div>
+
+  {% if can_manage %}
+    <div class="panel">
+      <h3 class="section-title flush">Update Status</h3>
+      <form method="post" action="{% url 'report_update_status' report.code %}" class="stacked-form">
+        {% csrf_token %}
+        <div class="field">
+          <label for="id_new_status">New Status</label>
+          {{ status_form.new_status }}
+        </div>
+        <div class="field">
+          <label for="id_message">Note (optional)</label>
+          {{ status_form.message }}
+        </div>
+        <button class="btn-red" type="submit">Save Update</button>
+      </form>
+    </div>
+  {% endif %}
+
+  {% if is_admin %}
+    <div class="panel">
+      <h3 class="section-title flush">Assign Responder</h3>
+      <form method="post" action="{% url 'report_assign' report.code %}" class="stacked-form">
+        {% csrf_token %}
+        <div class="field">
+          <label for="id_responder">Responder</label>
+          {{ assign_form.responder }}
+        </div>
+        <button class="btn-red" type="submit">Assign</button>
+      </form>
+    </div>
+  {% endif %}
+
+  <div class="panel">
+    <h3 class="section-title flush">Response Timeline</h3>
+    <ul class="timeline">
+      {% for u in updates %}
+        <li>
+          <div class="tl-time mono">{{ u.created_at|date:"M d, Y · h:i A" }}</div>
+          <div class="tl-body">
+            {{ u.message }}
+            <span class="tl-author">— {{ u.author.get_full_name|default:u.author.username|default:"system" }}</span>
+          </div>
+        </li>
+      {% empty %}
+        <li><div class="tl-body">No updates recorded yet.</div></li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <a class="link-btn" href="{% url 'dashboard' %}">← Back to dashboard</a>
+</div>
+{% endblock %}
