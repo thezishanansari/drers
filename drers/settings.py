@@ -21,7 +21,8 @@ def env(key, default=""):
 
 SECRET_KEY = env("SECRET_KEY", "dev-insecure-key-change-me")
 DEBUG = env("DEBUG", "True").lower() == "true"
-ALLOWED_HOSTS = [h.strip() for h in env("ALLOWED_HOSTS", "127.0.0.1,localhost").split(",") if h.strip()]
+ALLOWED_HOSTS = ["*"]
+# ALLOWED_HOSTS = [h.strip() for h in env("ALLOWED_HOSTS", "127.0.0.1,localhost").split(",") if h.strip()]
 
 
 INSTALLED_APPS = [
