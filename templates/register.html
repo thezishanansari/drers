@@ -30,21 +30,35 @@
           <label for="id_username">Username</label>
           <input id="id_username" name="username" value="{{ form.username.value|default_if_none:'' }}">
         </div>
-        <div class="field">
-          <label for="id_phone">Phone Number</label>
-          <input id="id_phone" name="phone" placeholder="98xxxxxxxx" value="{{ form.phone.value|default_if_none:'' }}">
-        </div>
-        <div class="field">
+    {% comment %} id_email and id_phone {% endcomment %}
+      <div class="field">
+        <label for="id_email">
+          Email Address
+        </label>
+        <input id="id_email" name="email" type="email" placeholder="yourname@gmail.com" value="{{ form.email.value|default_if_none:'' }}">
+      </div>
+
+      <div class="contact-divider">
+          <span>EMAIL OR PHONE</span>
+      </div>
+      
+      <div class="field">
+          <label for="id_phone">Nepali Mobile </label>
+          <input id="id_phone"name="phone" placeholder="98XXXXXXXX" value="{{ form.phone.value|default_if_none:'' }}">
+      </div>
+
+      <div class="field">
           <label for="id_password">Password</label>
           <input id="id_password" name="password" type="password" autocomplete="new-password">
-        </div>
+      </div>
+
+
         {# Role is set server-side to Citizen. It is deliberately NOT a form input. #}
         <button class="btn-red" type="submit">Create Citizen Account</button>
       </form>
 
       <p class="note">
-        New accounts are always registered with the Citizen role. Responder and Administrator
-        access is issued by the system administrator.
+        Use Email or Mobile Number to register. New accounts are assigned the Citizen role by default.
       </p>
     </div>
   </div>

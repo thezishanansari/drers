@@ -88,6 +88,55 @@ body{
   background:repeating-linear-gradient(115deg,#f2a62b 0px,#f2a62b 14px,#0d0c0b 14px,#0d0c0b 30px);
 }
 
+/*-----------------password_rest / forgot_password-------------*/
+.forgot-password{
+  text-align:right;
+  margin:10px 0 18px;
+}
+
+.forgot-password a{
+  color:var(--amber);
+  font-size:13px;
+  font-weight:600;
+  text-decoration:none;
+  transition:.2s;
+}
+
+.forgot-password a:hover{
+  color:#ffd27a;
+  text-decoration:underline;
+}
+
+/* ---------------- email OR phone ---------------- */
+/* ---------------- contact divider ---------------- */
+
+/* ---------------- contact divider ---------------- */
+.contact-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 22px 0 18px;
+  gap: 0;
+}
+
+.contact-divider::before,
+.contact-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.contact-divider span {
+  padding: 0 14px;
+  color: var(--amber);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
 /* ---------------- auth ---------------- */
 .auth-wrap{max-width:1160px;margin:0 auto;padding:44px 20px 90px}
 .auth-panel{

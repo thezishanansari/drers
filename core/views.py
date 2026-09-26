@@ -4,11 +4,11 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Q
+from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, redirect, render
 
 from .forms import AssignForm, LoginForm, RegisterForm, ReportForm, StatusUpdateForm
 from .models import DisasterReport, ResponseUpdate, Role, Status
-
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -30,24 +30,94 @@ def public_alerts(request):
     return render(request, "public_alerts.html", {"alerts": alerts})
 
 
+# def login_view(request):
+#     if request.user.is_authenticated:
+#         return redirect("dashboard")
+
+#     form = LoginForm(request.POST or None)
+#     if request.method == "POST" and form.is_valid():
+#         user = authenticate(
+#             request,
+#             username=form.cleaned_data["username"].strip(),
+#             password=form.cleaned_data["password"],
+#         )
+#         if user is None:
+#             messages.error(request, "Invalid username or password. Please try again.")
+#         elif not user.is_active:
+#             messages.error(request, "This account has been deactivated.")
+#         else:
+#             auth_login(request, user)
+#             return redirect(request.POST.get("next") or "dashboard")
+
+#     return render(request, "login.html", {"form": form})
+
 def login_view(request):
     if request.user.is_authenticated:
         return redirect("dashboard")
 
     form = LoginForm(request.POST or None)
+
     if request.method == "POST" and form.is_valid():
-        user = authenticate(
-            request,
-            username=form.cleaned_data["username"].strip(),
-            password=form.cleaned_data["password"],
-        )
+        identifier = form.cleaned_data["username"].strip()
+        password = form.cleaned_data["password"]
+
+        # Find the account using username, email, or phone
+        user_obj = None
+
+        # 1. Try username
+        try:
+            user_obj = User.objects.get(
+                username__iexact=identifier
+            )
+        except User.DoesNotExist:
+            pass
+
+        # 2. If username not found, try email
+        if user_obj is None:
+            try:
+                user_obj = User.objects.get(
+                    email__iexact=identifier
+                )
+            except User.DoesNotExist:
+                pass
+
+        # 3. If username/email not found, try phone
+        if user_obj is None:
+            try:
+                user_obj = User.objects.get(
+                    profile__phone=identifier
+                )
+            except User.DoesNotExist:
+                pass
+
+        # Authenticate using Django's username system
+        if user_obj is not None:
+            user = authenticate(
+                request,
+                username=user_obj.username,
+                password=password,
+            )
+        else:
+            user = None
+
+        # Login result
         if user is None:
-            messages.error(request, "Invalid username or password. Please try again.")
+            messages.error(
+                request,
+                "Invalid username, email, phone number, or password. Please try again."
+            )
+
         elif not user.is_active:
-            messages.error(request, "This account has been deactivated.")
+            messages.error(
+                request,
+                "This account has been deactivated."
+            )
+
         else:
             auth_login(request, user)
-            return redirect(request.POST.get("next") or "dashboard")
+            return redirect(
+                request.POST.get("next") or "dashboard"
+            )
 
     return render(request, "login.html", {"form": form})
 
