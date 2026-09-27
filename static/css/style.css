@@ -316,3 +316,15 @@ body{
   .narrow-wrap{padding:26px 16px 60px}
   .panel{padding:22px 18px}
 }
+
+.gps-btn{
+    width:100%;
+    margin-bottom:18px;
+}
+
+#incident-map{
+    height:400px;
+    border:1px solid var(--border);
+    border-radius:4px;
+    margin-bottom:20px;
+}

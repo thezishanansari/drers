@@ -114,6 +114,15 @@ class DisasterReport(models.Model):
         User, on_delete=models.SET_NULL, null=True, blank=True, related_name="assignments"
     )
 
+    latitude = models.FloatField(
+        null=True,
+        blank=True
+    )
+    longitude = models.FloatField(
+        null=True,
+        blank=True
+    )
+    
     photo = models.ImageField(upload_to="reports/", blank=True, null=True)
     is_public = models.BooleanField(default=True, help_text="Show on the public alerts page")
 

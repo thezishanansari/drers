@@ -23,6 +23,11 @@
           {% if f.help_text %}<small class="note">{{ f.help_text }}</small>{% endif %}
         </div>
       {% endfor %}
+      <div class="field">
+      <button
+        type="button" class="btn-ghost gps-btn" onclick="getCurrentLocation()">📍 Use My Current Location</button>
+      </div>
+      <div id="incident-map"></div>
       <button class="btn-red" type="submit">Submit Report</button>
       <a class="link-btn full" href="{% url 'dashboard' %}">Cancel</a>
     </form>

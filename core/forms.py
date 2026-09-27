@@ -103,11 +103,13 @@ class ReportForm(forms.ModelForm):
 
     class Meta:
         model = DisasterReport
-        fields = ["disaster_type", "title", "description", "location", "severity", "photo"]
+        fields = ["disaster_type", "title", "description", "location", "severity", "photo","latitude","longitude",]
         widgets = {
             "description": forms.Textarea(attrs={"rows": 4}),
             "title": forms.TextInput(attrs={"placeholder": "Short summary of the incident"}),
             "location": forms.TextInput(attrs={"placeholder": "Ward / area, district"}),
+            "latitude":forms.HiddenInput(),
+            "longitude":forms.HiddenInput(),
         }
 
 
