@@ -180,3 +180,33 @@ class ResponseUpdate(models.Model):
 
     def __str__(self):
         return f"{self.report.code} · {self.created_at:%b %d %H:%M}"
+
+#................................................
+# Public Disaster Notices 
+#................................................
+class PublicNotice(models.Model):
+
+    title = models.CharField(max_length=200)
+
+    message = models.TextField()
+
+    severity = models.CharField(
+        max_length=20,
+        choices=[
+            ("info", "Information"),
+            ("warning", "Warning"),
+            ("critical", "Critical"),
+        ],
+        default="info",
+    )
+
+    is_active = models.BooleanField(
+        default=True
+    )
+
+    created_at = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    def __str__(self):
+        return self.title

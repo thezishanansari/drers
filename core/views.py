@@ -9,6 +9,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 
 from .forms import AssignForm, LoginForm, RegisterForm, ReportForm, StatusUpdateForm
 from .models import DisasterReport, ResponseUpdate, Role, Status
+from .models import PublicNotice
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -27,29 +28,10 @@ def role_of(user):
 def public_alerts(request):
     """Public Disaster Alerts page — no login required."""
     alerts = DisasterReport.objects.filter(is_public=True).exclude(status=Status.REJECTED)
-    return render(request, "public_alerts.html", {"alerts": alerts})
+    notices = PublicNotice.objects.filter(is_active=True).order_by("-created_at")
+    
+    return render(request, "public_alerts.html", {"alerts": alerts,"notices": notices,})
 
-
-# def login_view(request):
-#     if request.user.is_authenticated:
-#         return redirect("dashboard")
-
-#     form = LoginForm(request.POST or None)
-#     if request.method == "POST" and form.is_valid():
-#         user = authenticate(
-#             request,
-#             username=form.cleaned_data["username"].strip(),
-#             password=form.cleaned_data["password"],
-#         )
-#         if user is None:
-#             messages.error(request, "Invalid username or password. Please try again.")
-#         elif not user.is_active:
-#             messages.error(request, "This account has been deactivated.")
-#         else:
-#             auth_login(request, user)
-#             return redirect(request.POST.get("next") or "dashboard")
-
-#     return render(request, "login.html", {"form": form})
 
 def login_view(request):
     if request.user.is_authenticated:
@@ -215,12 +197,21 @@ def responder_dashboard(request):
 @login_required
 def admin_dashboard(request):
     reports = DisasterReport.objects.all()
+    map_reports = DisasterReport.objects.exclude(
+        latitude__isnull=True
+    ).exclude(
+        longitude__isnull=True
+    )
     return render(
         request,
         "dashboard_admin.html",
-        {"reports": reports, "stats": _stats(reports), "role_name": "Administrator"},
+        {
+            "reports": reports,
+            "map_reports": map_reports,
+            "stats": _stats(reports),
+            "role_name": "Administrator",
+        },
     )
-
 
 # ---------------------------------------------------------------------------
 # Reports

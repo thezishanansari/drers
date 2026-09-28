@@ -17,6 +17,51 @@
 
   {% include "_stats.html" %}
 
+<h3 class="section-title">
+    Live Incident Map
+</h3>
+
+<div id="admin-map"></div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const map = L.map("admin-map").setView(
+        [28.0525, 81.6170],
+        11
+    );
+
+    L.tileLayer(
+      "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+      {
+      attribution:
+      '&copy; OpenStreetMap contributors &copy; CARTO',
+      subdomains: 'abcd',
+      maxZoom: 20
+      }
+      ).addTo(map);
+
+    {% for report in map_reports %}
+
+    L.marker([
+        {{ report.latitude }},
+        {{ report.longitude }}
+    ])
+    .addTo(map)
+    .bindPopup(
+        `
+        <strong>{{ report.code }}</strong><br>
+        {{ report.title }}<br>
+        {{ report.location }}<br>
+        {{ report.get_status_display }}
+        `
+    );
+
+    {% endfor %}
+
+});
+</script>
+
   <h3 class="section-title">All Incident Reports</h3>
   {% include "_report_table.html" with rows=reports %}
 </div>

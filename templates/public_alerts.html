@@ -4,6 +4,7 @@
 {% block content %}
 <div class="alerts-wrap">
   <div class="alerts-head">
+
     <div>
       <h2 class="alerts-title">Public Disaster Alerts</h2>
       <p class="alerts-sub">Verified incidents currently known to the situation room. Personal reporter details are kept private.</p>
@@ -14,6 +15,59 @@
       <a class="btn-ghost btn-lg" href="{% url 'login' %}">Citizen / Staff Log In →</a>
     {% endif %}
   </div>
+
+  {% if notices %}
+ 
+<h2 class="section-title">
+Emergency Notices
+</h2>
+ 
+<div class="alert-grid">
+ 
+{% for n in notices %}
+ 
+<article class="alert-card">
+ 
+<div class="badges">
+ 
+{% if n.severity == "critical" %}
+<span class="badge b-critical">
+Critical Notice
+</span>
+ 
+{% elif n.severity == "warning" %}
+<span class="badge b-medium">
+Warning
+</span>
+ 
+{% else %}
+<span class="badge b-low">
+Information
+</span>
+ 
+{% endif %}
+ 
+</div>
+ 
+<h3 class="alert-title">
+🚨 {{ n.title }}
+</h3>
+ 
+<p class="alert-desc">
+{{ n.message }}
+</p>
+ 
+<div class="alert-meta">
+Published {{ n.created_at|date:"M d, Y · h:i A" }}
+</div>
+ 
+</article>
+ 
+{% endfor %}
+ 
+</div>
+ 
+{% endif %}
 
   <div class="alert-grid">
     {% for a in alerts %}

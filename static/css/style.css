@@ -328,3 +328,11 @@ body{
     border-radius:4px;
     margin-bottom:20px;
 }
+
+#admin-map{
+    height:500px;
+    border:1px solid var(--border);
+    border-radius:4px;
+    margin-bottom:30px;
+    overflow:hidden;
+}

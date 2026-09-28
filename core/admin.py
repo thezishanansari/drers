@@ -1,5 +1,5 @@
 from django.contrib import admin
-
+from .models import PublicNotice
 from .models import DisasterReport, Profile, ResponseUpdate
 
 
@@ -27,3 +27,23 @@ class DisasterReportAdmin(admin.ModelAdmin):
 @admin.register(ResponseUpdate)
 class ResponseUpdateAdmin(admin.ModelAdmin):
     list_display = ("report", "author", "new_status", "created_at")
+
+
+@admin.register(PublicNotice)
+class PublicNoticeAdmin(admin.ModelAdmin):
+    list_display = (
+        "title",
+        "severity",
+        "is_active",
+        "created_at",
+    )
+
+    list_filter = (
+        "severity",
+        "is_active",
+    )
+
+    search_fields = (
+        "title",
+        "message",
+    )
