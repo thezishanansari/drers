@@ -20,4 +20,7 @@ urlpatterns = [
     path("report/<str:code>/", views.report_detail, name="report_detail"),
     path("report/<str:code>/status/", views.report_update_status, name="report_update_status"),
     path("report/<str:code>/assign/", views.report_assign, name="report_assign"),
+
+    #notification
+    path("notifications/", views.notifications_view, name="notifications",),
 ]

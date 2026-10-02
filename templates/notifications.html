@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}
+Notifications · DRERS
+{% endblock %}
+
+{% block content %}
+
+<div class="narrow-wrap">
+
+    <div class="panel">
+
+        <h2 class="section-title flush">
+            Notifications
+        </h2>
+
+        {% for n in notifications %}
+
+        <div class="alert-card">
+
+            <h3 class="alert-title">
+                🔔 {{ n.title }}
+            </h3>
+
+            <p class="alert-desc">
+                {{ n.message }}
+            </p>
+
+            <div class="alert-meta">
+                {{ n.created_at }}
+            </div>
+
+        </div>
+
+        {% empty %}
+
+        <p class="note">
+            No notifications.
+        </p>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+{% endblock %}

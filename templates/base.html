@@ -47,6 +47,7 @@
       <div class="header-actions">
         {% if user.is_authenticated %}
           <a class="btn-ghost" href="{% url 'dashboard' %}">{{ user.first_name|default:user.username }} · Dashboard</a>
+          <a class="btn-ghost" href="{% url 'notifications' %}">🔔 Notificaitons</a>
           <a class="btn-ghost" href="{% url 'logout' %}">Log Out</a>
         {% else %}
           <a class="btn-ghost" href="{% url 'login' %}">Citizen / Staff Log In</a>

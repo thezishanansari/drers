@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, redirect, render
 
 from .forms import AssignForm, LoginForm, RegisterForm, ReportForm, StatusUpdateForm
-from .models import DisasterReport, ResponseUpdate, Role, Status
+from .models import DisasterReport, ResponseUpdate, Role, Status, Notification
 from .models import PublicNotice
 
 # ---------------------------------------------------------------------------
@@ -136,6 +136,13 @@ def dashboard(request):
         return responder_dashboard(request)
     return citizen_dashboard(request)
 
+@login_required
+def notifications_view(request):
+    notifications=request.user.notifications.all()
+    notifications.update(is_read=True)
+    return render(
+        request, "notifications.html",{"notifications":notifications}
+    )
 
 def _stats(qs):
     return qs.aggregate(
@@ -223,6 +230,10 @@ def report_create(request):
         report = form.save(commit=False)
         report.reporter = request.user
         report.save()
+        admins = User.objects.filter(profile__role=Role.ADMIN)
+        for admin in admins:
+            Notification.objects.create(user=admin, title="New Incident Report",message=f"{report.code} was submitted.")
+
         ResponseUpdate.objects.create(
             report=report, author=request.user, message="Report submitted.",
             new_status=Status.PENDING,
@@ -271,6 +282,11 @@ def report_update_status(request, code):
     if form.is_valid():
         report.status = form.cleaned_data["new_status"]
         report.save()
+        
+        if report.reporter:
+            Notification.objects.create(user=report.reporter,
+                                        title="Report Status Updated",
+                                        message=f"{report.code} is now {report.get_status_display()}")
         ResponseUpdate.objects.create(
             report=report,
             author=request.user,
@@ -287,13 +303,17 @@ def report_assign(request, code):
     if role_of(request.user) != Role.ADMIN:
         messages.error(request, "Only administrators can assign responders.")
         return redirect("report_detail", code=code)
-
     form = AssignForm(request.POST)
     if form.is_valid():
         report.assigned_to = form.cleaned_data["responder"]
         if report.status == Status.PENDING:
             report.status = Status.ASSIGNED
         report.save()
+        
+    if report.assigned_to:
+        Notification.objects.create(user=report.assigned_to,
+                                    title="Incident Assigned",
+                                    messages=f"You have been assigned report {report.code}")
         ResponseUpdate.objects.create(
             report=report,
             author=request.user,
